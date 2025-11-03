@@ -897,9 +897,9 @@ template:
 
 5. 주석 업데이트 검증
 
-Argo CD 대시보드에서 **Setting > Cluster > hub-cluster** 로 이동하여 hub-cluster 객체를 확인하세요. 이를 통해 GitOps Bridge가 주석을 성공적으로 업데이트했는지 확인할 수 있습니다.
+    Argo CD 대시보드에서 **Setting > Cluster > hub-cluster** 로 이동하여 hub-cluster 객체를 확인하세요. 이를 통해 GitOps Bridge가 주석을 성공적으로 업데이트했는지 확인할 수 있습니다.
 
-![](images/2025-10-29-14-45-24.png)
+    ![](images/2025-10-29-14-45-24.png)
 
 ## ArgoCD Git 저장소(10분)
 
