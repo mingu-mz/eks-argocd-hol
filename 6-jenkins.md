@@ -566,7 +566,7 @@ Argocd 및 Git레포지토리에 접근하기 위한 Credentials을 추가합니
     ![](images/2025-10-31-15-25-52.png)
     
 
-## Jenkins Pipeline
+## Jenkins Pipeline(15분)
 
 이 장에서는 stage demo-application을 위한 배포 파이프라인을 생성하고 코드를 수정하여 새로운 버전의 애플리케이션이 적용되는 과정을 알아봅니다.
 
