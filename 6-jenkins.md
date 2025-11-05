@@ -519,7 +519,7 @@ Argocd 및 Git레포지토리에 접근하기 위한 Credentials을 추가합니
     System의 (global)을 확장하여 `Add Credentials`를 선택합니다.
     ![](images/2025-10-31-15-18-17.png)
 
-    3. Credential 생성
+ 3. Credential 생성
 
     1번에서 조회한 결과를 토대로 데이터를 입력합니다.
     ![](images/2025-10-31-15-20-45.png)
@@ -810,33 +810,33 @@ Argocd 및 Git레포지토리에 접근하기 위한 Credentials을 추가합니
 
 4. environment입력
 
-3번의 결과를 Pipeline `// REPLACE ENVIRONMENT INFO` 부분에 붙여 넣습니다.
+    3번의 결과를 Pipeline `// REPLACE ENVIRONMENT INFO` 부분에 붙여 넣습니다.
 
-예시:
-```groovy
-.
+    예시:
+    ```groovy
+    .
 
-    environment {
-        // ECR
-        ECR_REGISTRY = "940482424078.dkr.ecr.ap-northeast-2.amazonaws.com"
-        IMAGE_NAME = "eks-blueprint-workshop-demo-application"
-        APPLICATION_REPO = "https://drys2vc4z95uy.cloudfront.net/gitea/workshop-user/eks-blueprints-workshop-gitops-demo-application"
-        // GitOps
-        GITOPS_REPO = "https://drys2vc4z95uy.cloudfront.net/gitea/workshop-user/eks-blueprints-workshop-gitops-apps.git"
-        GITOPS_DIR = "deploy-workshop/canary/staging"
-        // ArgoCD
-        ARGOCD_SERVER = "k8s-argocd-argocdse-b337ad2062-82706d3036fd5160.elb.ap-northeast-2.amazonaws.com"
-        ARGOCD_APP_NAME = "deployment-staging-canary-deploy-workshop"
-        ARGOCD_APP_ROLLOUT_NAME = "rollout-canary"
-    }
-.
-.
-```
+        environment {
+            // ECR
+            ECR_REGISTRY = "940482424078.dkr.ecr.ap-northeast-2.amazonaws.com"
+            IMAGE_NAME = "eks-blueprint-workshop-demo-application"
+            APPLICATION_REPO = "https://drys2vc4z95uy.cloudfront.net/gitea/workshop-user/eks-blueprints-workshop-gitops-demo-application"
+            // GitOps
+            GITOPS_REPO = "https://drys2vc4z95uy.cloudfront.net/gitea/workshop-user/eks-blueprints-workshop-gitops-apps.git"
+            GITOPS_DIR = "deploy-workshop/canary/staging"
+            // ArgoCD
+            ARGOCD_SERVER = "k8s-argocd-argocdse-b337ad2062-82706d3036fd5160.elb.ap-northeast-2.amazonaws.com"
+            ARGOCD_APP_NAME = "deployment-staging-canary-deploy-workshop"
+            ARGOCD_APP_ROLLOUT_NAME = "rollout-canary"
+        }
+    .
+    .
+    ```
 
 5. 생성 완료
 
-`Apply` > `Save` 를 차례로 선택하여 저장합니다.
-![](images/2025-10-31-15-48-01.png)
+    `Apply` > `Save` 를 차례로 선택하여 저장합니다.
+    ![](images/2025-10-31-15-48-01.png)
 
 ## demo-application 수정
 
