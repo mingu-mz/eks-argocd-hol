@@ -1,11 +1,11 @@
 Argo Rollout And Karpenter
 ---
 
-# Argo Rollout
+# Argo Rollout(20분)
 
 이 장에서는 Argo Rollout CRD의 3가지 유형에 대해 살펴봅니다.
 
-## Argo Rollout: rolling
+## Argo Rollout: rolling(5분)
 
 rolling유형에 새로운 버전이 배포되면 어떻게 동작하는지 알아봅니다.
 
@@ -76,7 +76,7 @@ rolling유형에 새로운 버전이 배포되면 어떻게 동작하는지 알�
     ![](images/2025-10-30-16-33-57.png)
 
 
-## Argo Rollout: bluegreen
+## Argo Rollout: bluegreen(5분)
 
 bluegreen유형에 새로운 버전이 배포되면 어떻게 동작하는지 알아봅니다.
 
@@ -163,8 +163,7 @@ bluegreen유형에 새로운 버전이 배포되면 어떻게 동작하는지 �
     ![](images/2025-10-30-16-53-23.png)
 
 
-## Argo Rollout: canary
-
+## Argo Rollout: canary(10분)
 
 bluegreen유형에 새로운 버전이 배포되면 어떻게 동작하는지 알아봅니다.
 
@@ -255,7 +254,7 @@ rollout.yaml
     ![](images/2025-10-30-17-08-21.png)
 
 
-# Karpenter
+# Karpenter(30분)
 
 EKS AutoMode는 이미 완전관리형 Karpenter가 설치되어 있습니다. 또한 내장 nodepool 2개(system, general-purpose)와 내장 nodeclass(default)하나를 포함하고 있습니다.
 
@@ -263,7 +262,7 @@ EKS AutoMode는 이미 완전관리형 Karpenter가 설치되어 있습니다. �
 
 이 장에서는 커스텀 nodepool과 nodeclass를 생성하여 적용해 보도록하겠습니다.
 
-## Karpenter Node: nodepool, nodeclass 만들기
+## Karpenter Node: nodepool, nodeclass 만들기(10분)
 
 플랫폼 엔지니어로써 Karpenter Node를 온보딩하겠습니다. 이 작업은 온전히 platform안에서 이루어집니다.
 
@@ -423,7 +422,7 @@ EKS AutoMode는 이미 완전관리형 Karpenter가 설치되어 있습니다. �
     EOF
     ```
 
-6. staging nodepoll 생성
+6. staging nodepool 생성
 
     ```sh
     mkdir -p $GITOPS_DIR/platform/config/karpenter-node/staging
@@ -534,7 +533,7 @@ EKS AutoMode는 이미 완전관리형 Karpenter가 설치되어 있습니다. �
     default            spoke-staging-eks-auto-20251031010314563800000005   True    109m
     ```
 
-## staging deploy-workshop 노드 변경
+## staging deploy-workshop 노드 변경(10분)
 
 이 장에서는 staging에 배포되어있는 deploy-workshop 서비스들이 custom 노드를 사용하도록 변경해보도록하겠습니다.
 
@@ -656,7 +655,7 @@ argocd app actions run deployment-staging-canary-deploy-workshop resume \
     rolling         rollout-rolling-77cfd7c59c-vq9w7     i-0ccde876d8c3ff5ee
     ```
 
-## Scaleout 
+## Scaleout(10분)
 
 EKS 노드그룹이 Auto Scaling Group을 통해 노드를 관리하는 것과 Karpenter는 노드를 직접 관리합니다. 
 

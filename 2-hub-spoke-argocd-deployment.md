@@ -4,7 +4,7 @@
 
 이 장에서는 스포크 스테이징 클러스터 에 배포된 애플리케이션과 애드온을 관리하기 위해 허브 클러스터 에서 Argo CD를 구성합니다.
 
-# 허브 to 스포크 연결(45분)
+# 허브 to 스포크 연결(30분)
 
 다음 다이어그램은 허브 ArgoCD가 원격 클러스터를 관리하는 방식을 설명합니다( spoke-staging).
 
@@ -23,118 +23,6 @@
     - `roleArn`: `spoke-role`
 
 ArgoCD 애플리케이션이 spoke-staging클러스터에 배포되면 ArgoCD는 `spoke-role` 역할을 수행합니다. 이 역할은 스포크 클러스터의 Kubernetes API 서버에 대한 액세스 권한을 부여하여 ArgoCD가 원격으로 애플리케이션을 배포하고, 애드온을 관리하고, 워크로드를 조정할 수 있도록 합니다.
-
-## spoke-staing 클러스터 생성 (20분)
-
-이 장에서는 플랫폼 엔지니어로서 spoke-staging이라는 또 다른 EKS 클러스터를 만들 것입니다.
-
-![](images/2025-10-30-15-08-17.png)
-
-스포크 스테이징 클러스터는 허브 클러스터 와 유사한 구성을 갖습니다 . 이 단계에서는 허브 클러스터에서 Terraform 구성을 복사하고 필요한 경우 업데이트하여 스테이징 스포크 클러스터를 생성합니다.
-
-1. 원격 상태 구성
-
-    스포크 스테이징 클러스터에서 VPC 모듈(for subnet)과 허브 모듈(hub-spoke 연결용)의 출력을 참조해야 합니다.
-
-    ```sh
-    mkdir -p ~/environment/spoke
-    cd ~/environment/spoke
-    cat > ~/environment/spoke/remote_state.tf << 'EOF'
-    data "terraform_remote_state" "vpc" {
-      backend = "local"
-
-      config = {
-        path = "${path.module}/../vpc/terraform.tfstate"
-      }
-    }
-    data "terraform_remote_state" "hub" {
-      backend = "local"
-
-      config = {
-        path = "${path.module}/../hub/terraform.tfstate"
-      }
-    }
-
-    EOF
-    ```
-
-2. EKS Spoke 클러스터 구성
-
-    허브 클러스터의 Terraform 구성을 몇 가지 변경 사항과 함께 재사용해 보겠습니다.
-
-    ```sh
-    cp ~/environment/hub/main.tf ~/environment/spoke
-    cp ~/environment/hub/variables.tf ~/environment/spoke
-    cp ~/environment/hub/outputs.tf ~/environment/spoke
-    cp ~/environment/hub/versions.tf ~/environment/spoke
-    sed -i 's/hub-cluster/spoke-${terraform.workspace}/g' ~/environment/spoke/main.tf
-    sed -i 's/environment = "dev"/environment = terraform.workspace/' ~/environment/spoke/main.tf
-    sed -i 's/fleet_member = "hub"/fleet_member = "spoke"/' ~/environment/spoke/main.tf
-    sed -i 's/{ workload_webstore = true }/{ workload_webstore = false }/' ~/environment/spoke/main.tf
-
-    # Clean some parts
-    sed -i 's/^    bootstrap   = file("${path.module}\/bootstrap\/bootstrap-applicationset.yaml")/#    bootstrap   = file("${path.module}\/bootstrap\/bootstrap-applicationset.yaml")/' ~/environment/spoke/main.tf
-    sed -i '/^module "gitops_bridge_bootstrap" {/,/^}/d' ~/environment/spoke/main.tf
-    sed -i '/^resource "kubernetes_secret" "git_secrets" {/,/^}/d' ~/environment/spoke/main.tf
-    ```
-
-    허브-클러스터 Terraform 구성에 대한 변경 사항:
-
-    - 5행: 클러스터 이름을 hub-cluster에서 spoke-${terraform.workspace}로 변경합니다. "staging" 작업 공간은 이후 단계에서 생성됩니다.
-    - 6행: 레이블을 environment=staging으로 설정합니다.
-    - 7행: 레이블을 fleet_member=spoke로 설정합니다.
-    - 8행: 레이블을 workload_webstore=false로 설정합니다. 이 설정은 이후 장에서 애플리케이션 배포 시 true로 설정됩니다. 11~
-    - 13행: 부트스트랩 ApplicationSet을 비활성화하고 GitOps Bridge 모듈을 제거합니다(Spoke-staging 클러스터에는 Argo CD를 배포하지 않습니다).
-
-3. 애드온 구성
-
-    .tfvars 파일을 복사하고 Argo CD 및 기타 선택적 구성 요소를 비활성화합니다.
-
-    ```sh
-    cp ~/environment/hub/terraform.tfvars ~/environment/spoke/terraform.tfvars
-    sed -i 's/enable_argocd = true/enable_argocd = false/' ~/environment/spoke/terraform.tfvars
-    sed -i 's/enable_ingress_nginx = true/enable_ingress_nginx = false/' ~/environment/spoke/terraform.tfvars
-    sed -i 's/enable_external_secrets = true/enable_external_secrets = false/' ~/environment/spoke/terraform.tfvars
-    ```
-
-4. Terraform 작업 공간 생성 및 Terraform 적용
-
-    새로운 스테이징 작업 공간을 만들고 구성을 적용합니다.
-
-    ```sh
-    cd ~/environment/spoke
-    terraform workspace new staging
-    terraform init
-    terraform apply --auto-approve
-    ```
-
-    리소스가 생성될 때까지 기다리세요
-    클러스터를 만드는 과정은 일반적으로 완료하는 데 약 15분이 걸립니다.
-
-5. Spoke Staging 클러스터에 액세스
-
-    kubectl을 구성하려면 다음을 실행합니다.
-
-    ```sh
-    eval $(terraform output -raw configure_kubectl)
-    ```
-
-    kubectl이 올바르게 구성되었는지 확인하려면 다음을 실행하세요.
-
-    ```sh
-    kubectl get svc --context spoke-staging
-    ```
-
-    kubectl이 올바르게 구성되었는지 확인하려면 아래 명령을 실행하여 API 엔드포인트에 도달할 수 있는지 확인하세요.
-
-    예상 출력:
-
-    ```sh
-    NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
-    kubernetes   ClusterIP   172.20.0.1   <none>        443/TCP   2d
-    ```
-
-    이제 AWS 콘솔의 EKS > 클러스터에서 스포크 스테이징 클러스터를 볼 수 있습니다.
 
 ## 허브 클러스터 구성(10분)
 
@@ -252,7 +140,7 @@ ArgoCD 애플리케이션이 spoke-staging클러스터에 배포되면 ArgoCD는
     kubectl rollout restart -n argocd statefulset argocd-application-controller --context hub-cluster
     ```
 
-## 스포크 클러스터 구성(15분)
+## 스포크 클러스터 구성(10분)
 
 이 장에서는 스포크 스테이징 클러스터를 허브 Argo CD 인스턴스에 관리형 클러스터로 등록할 수 있도록 구성합니다. 이를 통해 허브 클러스터에서 실행되는 Argo CD가 스포크에 워크로드를 배포할 수 있습니다.
 
@@ -434,8 +322,7 @@ ArgoCD 애플리케이션이 spoke-staging클러스터에 배포되면 ArgoCD는
 
     ![](images/2025-10-30-15-37-33.png)
 
-# deploy-workshop Staging: 네임스페이스 설정(10분)
-
+# deploy-workshop Staging: 네임스페이스 설정(5분)
 
 이 장에서는 다음과 같은 역할을 하게 됩니다. 플랫폼 엔지니어로서 `spoke-staging`클러스터에서 deploy-worksghop 워크로드를 위한 네임스페이스를 만듭니다.
 
@@ -468,7 +355,20 @@ helm:
 .
 ```
 
-1. 네임스페이스 검증
+1. Spoke Cluster에서 workload_deploy-workshop 레이블 활성화
+
+    ```sh
+    sed -i "s/workload_webstore = false/workload_deploy-workshop = true/g" ~/environment/spoke/main.tf
+    ```
+
+2. Terraform 적용
+
+    ```sh
+    cd ~/environment/spoke
+    terraform apply --auto-approve
+    ```
+
+3. 네임스페이스 검증
 
     > **메모**
     > 
@@ -497,7 +397,7 @@ helm:
     ![](images/2025-10-30-16-06-02.png)
 
 
-# 스테이징에 deploy-workshop 배포(10분)
+# 스테이징에 deploy-workshop 배포(5분)
 
 이 장에서는 응용 프로그램 팀이 플랫폼 팀의 직접적인 참여 없이 deploy-workshop 스테이징 애플리케이션을 독립적으로 배포합니다.
 

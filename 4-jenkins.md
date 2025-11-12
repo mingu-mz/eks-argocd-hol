@@ -1,4 +1,4 @@
-# Jenkins
+# Jenkins(70분)
 
 이 장에서는 Jenkins를 설치하고 Jenkins pipeline을 사용하여 배포하는 방법에 대해 알아봅니다.
 
@@ -29,9 +29,11 @@
     ![](images/2025-10-31-14-02-32.png)
 
     저장소 이름에 `eks-blueprints-workshop-gitops-demo-application`를 입력하고
+
     ![](images/2025-10-31-14-03-58.png)
 
     제일 아래에 `저장소 만들기`를 선택합니다.
+
     ![](images/2025-10-31-14-05-25.png)
 
 3. 생성완료
@@ -152,16 +154,6 @@ Jenkins NodE(Agent)에서 aws와 argocd명령을 사용하기 위해서 별도�
     # ArgoCD CLI 설치
     RUN curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.12.2/argocd-linux-amd64 && \
         chmod +x /usr/local/bin/argocd
-
-    # kubectl 설치 (선택사항)
-    RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
-        install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && \
-        rm kubectl
-
-    # Docker CLI 설치 (선택사항)
-    RUN apt-get update && \
-        apt-get install -y docker.io && \
-        rm -rf /var/lib/apt/lists/*
 
     USER jenkins
     EOF
@@ -859,7 +851,7 @@ COLOR라는 파일을 생성하여 `red`라는 값을 입력하도록하겠습�
     git push
     ```
 
-## Jenkins Pipeline 실행
+## Jenkins Pipeline 실행(10분)
 
 1. `deploy-workshop-staging-canary` Job으로 이동
 
