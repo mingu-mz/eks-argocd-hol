@@ -319,7 +319,7 @@ ApplicationSet은 ArgoCD 애플리케이션의 팩토리라고 생각하면 됩�
       | select(.data != null)
       | select(any(.data[]?; @base64d == "guestbookrepo"))
       | .metadata.name
-    ' | xargs -r -I{} kubectl delete secret -n argocd {}
+    ' | xargs -r -I{} kubectl delete secret -n argocd {} --context hub-cluster
     ```
 
     > **메모**
