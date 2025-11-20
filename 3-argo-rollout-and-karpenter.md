@@ -632,7 +632,7 @@ nodeSelector:
 
     pod를 조회하여 노드 확인:
     ```sh
-    kubectl get pods -A -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,NODE:.spec.nodeName \
+    kubectl --context spoke-staging get pods -A -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,NODE:.spec.nodeName \
     | egrep '^(NAMESPACE|rolling|bluegreen|canary)[[:space:]]'
     ```
 
