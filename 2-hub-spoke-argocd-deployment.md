@@ -340,7 +340,18 @@ ArgoCD 애플리케이션이 spoke-staging클러스터에 배포되면 ArgoCD는
 
 # addon 설치
 
-1. spoke cluster에 deploy-workshop을 배포하려면 `rollouts`가 필요합니다.
+1. spoke cluster에서 hpa scaling을 위해서 `metrics-server`가 필요합니다.
+
+    ```sh
+    sed -i '
+    /addons = {/,/}/{
+        /}/i\
+        enable_metrics_server = true
+    }
+    ' ~/environment/spoke/terraform.tfvars
+    ```
+
+2. spoke cluster에 deploy-workshop을 배포하려면 `rollouts`가 필요합니다.
 
     ```sh
     sed -i '
@@ -351,7 +362,7 @@ ArgoCD 애플리케이션이 spoke-staging클러스터에 배포되면 ArgoCD는
     ' ~/environment/spoke/terraform.tfvars
     ```
 
-2. 변경 사항 적용
+3. 변경 사항 적용
 
     ```sh
     cd ~/environment/spoke
