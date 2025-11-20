@@ -620,7 +620,7 @@ nodeSelector:
 4. 검증
 
     ```sh
-    kubectl get nodes -L karpenter.sh/nodepool --spoke-staging
+    kubectl --context spoke-staging get nodes -L karpenter.sh/nodepool
     ```
 
     결과:
