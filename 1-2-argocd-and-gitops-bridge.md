@@ -159,7 +159,7 @@ Argo CD는 Application 객체를 사용하여 유사한 접근 방식을 따릅�
     Application(svc,deployment, replicaset, pods)에서 생성된 리소스를 확인할 수 있습니다.
 
     ```sh
-    kubectl get all -n guestbook
+    kubectl get all -n guestbook --context hub-cluster
     ```
 
 ### 자동 조정(Auto Reconciliation)
