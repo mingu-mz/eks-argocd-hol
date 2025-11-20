@@ -177,11 +177,11 @@ rollout.yaml
       - setWeight: 20
       - pause: {}
       - setWeight: 40    # 전체 Pod의 40%를 카나리 버전으로
-      - pause: {duration: 10s}
+      - pause: {}
       - setWeight: 60
-      - pause: {duration: 10s}
+      - pause: {}
       - setWeight: 80
-      - pause: {duration: 10s}
+      - pause: {}
 ```
 
 - 2번째 줄: canary유형을 정의합니다.
