@@ -338,6 +338,30 @@ ArgoCD 애플리케이션이 spoke-staging클러스터에 배포되면 ArgoCD는
 
     ![](images/2025-10-30-15-37-33.png)
 
+# addon 설치
+
+1. spoke cluster에 deploy-workshop을 배포하려면 `rollouts`가 필요합니다.
+
+    ```sh
+    sed -i '
+    /addons = {/,/}/{
+        /}/i\
+        enable_argo_rollouts = true
+    }
+    ' ~/environment/spoke/terraform.tfvars
+    ```
+
+2. 변경 사항 적용
+
+    ```sh
+    cd ~/environment/spoke
+    terraform init
+    terraform workspace select staging
+    terraform apply --auto-approve
+    ```
+
+
+
 # deploy-workshop Staging: 네임스페이스 설정(5분)
 
 이 장에서는 다음과 같은 역할을 하게 됩니다. 플랫폼 엔지니어로서 `spoke-staging`클러스터에서 deploy-worksghop 워크로드를 위한 네임스페이스를 만듭니다.
