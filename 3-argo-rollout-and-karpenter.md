@@ -559,37 +559,37 @@ nodeSelector:
 
 1. deploy-workshop 서비스 rollout template에 toleration 및 nodeSelector 추가
 
-```sh
-cat >> $GITOPS_DIR/workload/deploy-workshop/rolling/staging/rollout.yaml << 'EOF'
-      tolerations:
-      - key: workload
-        operator: Equal
-        value: custom
-        effect: NoSchedule
-      nodeSelector:
-        workload: custom
-EOF
+    ```sh
+    cat >> $GITOPS_DIR/workload/deploy-workshop/rolling/staging/rollout.yaml << 'EOF'
+          tolerations:
+          - key: workload
+            operator: Equal
+            value: custom
+            effect: NoSchedule
+          nodeSelector:
+            workload: custom
+    EOF
 
-cat >> $GITOPS_DIR/workload/deploy-workshop/bluegreen/staging/rollout.yaml << 'EOF'
-      tolerations:
-      - key: workload
-        operator: Equal
-        value: custom
-        effect: NoSchedule
-      nodeSelector:
-        workload: custom
-EOF
+    cat >> $GITOPS_DIR/workload/deploy-workshop/bluegreen/staging/rollout.yaml << 'EOF'
+          tolerations:
+          - key: workload
+            operator: Equal
+            value: custom
+            effect: NoSchedule
+          nodeSelector:
+            workload: custom
+    EOF
 
-cat >> $GITOPS_DIR/workload/deploy-workshop/canary/staging/rollout.yaml << 'EOF'
-      tolerations:
-      - key: workload
-        operator: Equal
-        value: custom
-        effect: NoSchedule
-      nodeSelector:
-        workload: custom
-EOF
-```
+    cat >> $GITOPS_DIR/workload/deploy-workshop/canary/staging/rollout.yaml << 'EOF'
+          tolerations:
+          - key: workload
+            operator: Equal
+            value: custom
+            effect: NoSchedule
+          nodeSelector:
+            workload: custom
+    EOF
+    ```
 
 2. git 커밋
 
