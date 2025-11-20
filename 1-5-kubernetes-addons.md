@@ -425,7 +425,7 @@ GitOps Bridge는 선언적 접근 방식을 사용하여 애드온 관리를 간
       provider:
         aws:
           service: SecretsManager
-          region: ap-northeast-2
+          region: us-west-2
 
     ---
 
