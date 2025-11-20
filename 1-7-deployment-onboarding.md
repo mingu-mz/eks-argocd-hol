@@ -812,11 +812,11 @@ Canary 배포는 운영 환경에서 신규 버전을 점진적으로 배포하�
           - setWeight: 20
           - pause: {}
           - setWeight: 40    # 전체 Pod의 40%를 카나리 버전으로
-          - pause: {duration: 10s}
+          - pause: {}
           - setWeight: 60
-          - pause: {duration: 10s}
+          - pause: {}
           - setWeight: 80
-          - pause: {duration: 10s}
+          - pause: {}
     EOF
     ```
 
