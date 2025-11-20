@@ -313,8 +313,8 @@ ApplicationSet은 ArgoCD 애플리케이션의 팩토리라고 생각하면 됩�
 
     ```sh
     argocd appset delete guestbook  -y
-    kubectl delete ns guestbook --force
-    kubectl get secrets -n argocd -o json | jq -r '
+    kubectl delete ns guestbook --force --context hub-cluster
+    kubectl get secrets -n argocd -o json --context hub-cluster | jq -r '
       .items[]
       | select(.data != null)
       | select(any(.data[]?; @base64d == "guestbookrepo"))
