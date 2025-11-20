@@ -192,7 +192,7 @@ Argo CD는 Application 객체를 사용하여 유사한 접근 방식을 따릅�
     **서버가 바쁠 수 있으므로 조정하는 데 1~2분이 걸릴 수 있습니다.**
 
     ```sh
-    kubectl get pods -n guestbook
+    kubectl get pods -n guestbook --context hub-cluster
     ```
 
 3. 정리
@@ -201,7 +201,7 @@ Argo CD는 Application 객체를 사용하여 유사한 접근 방식을 따릅�
 
     ```sh
     argocd app delete guestbook --cascade -y
-    kubectl delete ns guestbook --force
+    kubectl delete ns guestbook --force --context hub-cluster
     ```
 
     > 메모
