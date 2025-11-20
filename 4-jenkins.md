@@ -74,7 +74,7 @@
 1. 저장소 생성
 
     ```sh
-    aws ecr create-repository --repository-name eks-blueprint-workshop-demo-application --region ap-northeast-2
+    aws ecr create-repository --repository-name eks-blueprint-workshop-demo-application --region $AWS_REGION
     ```
 
 2. docker build & push 
@@ -82,7 +82,7 @@
     ```sh
     cd ${GITOPS_DIR}/demo-application
     export DEMO_APPLICATION_DOCKER_REGISTRY="${ACCOUNTID}.dkr.ecr.${AWS_REGION}.amazonaws.com/eks-blueprint-workshop-demo-application"
-    aws ecr get-login-password --region ap-northeast-2 \
+    aws ecr get-login-password --region $AWS_REGION \
       | docker login --username AWS --password-stdin ${DEMO_APPLICATION_DOCKER_REGISTRY}
     docker build --build-arg COLOR=blue --build-arg ERROR_RATE= --build-arg LATENCY= -t ${DEMO_APPLICATION_DOCKER_REGISTRY}:test .
     docker push ${DEMO_APPLICATION_DOCKER_REGISTRY}:test
@@ -94,7 +94,7 @@
     aws ecr list-images \
       --repository-name eks-blueprint-workshop-demo-application \
       --filter tagStatus=TAGGED \
-      --region ap-northeast-2 \
+      --region $AWS_REGION \
       --output json
     ```
 
@@ -120,13 +120,13 @@ Jenkins NodE(Agent)에서 aws와 argocd명령을 사용하기 위해서 별도�
 1. custom Jenkins Agent ECR 저장소 생성
 
     ```sh
-    aws ecr create-repository --repository-name eks-blueprint-workshop-jenkins-agent --region ap-northeast-2
+    aws ecr create-repository --repository-name eks-blueprint-workshop-jenkins-agent --region $AWS_REGION
     ```
 
 2. 검증
 
     ```sh
-    aws ecr describe-repositories --repository-names eks-blueprint-workshop-jenkins-agent --region ap-northeast-2
+    aws ecr describe-repositories --repository-names eks-blueprint-workshop-jenkins-agent --region $AWS_REGION
     ```
 
 ### Custom Jenkins Agent Docker 이미지 생성
@@ -164,7 +164,7 @@ Jenkins NodE(Agent)에서 aws와 argocd명령을 사용하기 위해서 별도�
     ```sh
     export JENKINS_AGENT_DOCKER_REGISTRY="${ACCOUNTID}.dkr.ecr.${AWS_REGION}.amazonaws.com/eks-blueprint-workshop-jenkins-agent"
     cd $GITOPS_DIR/pipeline
-    aws ecr get-login-password --region ap-northeast-2  | docker login --username AWS --password-stdin ${JENKINS_AGENT_DOCKER_REGISTRY}
+    aws ecr get-login-password --region $AWS_REGION  | docker login --username AWS --password-stdin ${JENKINS_AGENT_DOCKER_REGISTRY}
     docker build -t ${JENKINS_AGENT_DOCKER_REGISTRY}:latest -f Dockerfile .
     docker push ${JENKINS_AGENT_DOCKER_REGISTRY}:latest
     ```
@@ -175,7 +175,7 @@ Jenkins NodE(Agent)에서 aws와 argocd명령을 사용하기 위해서 별도�
     aws ecr list-images \
       --repository-name eks-blueprint-workshop-jenkins-agent \
       --filter tagStatus=TAGGED \
-      --region ap-northeast-2 \
+      --region $AWS_REGION \
       --output json
     ```
 
@@ -294,7 +294,7 @@ Jenkins NodE(Agent)에서 aws와 argocd명령을 사용하기 위해서 별도�
               envVars:
               - envVar:
                   key: AWS_REGION
-                  value: ap-northeast-2
+                  value: ${AWS_REGION}
             - name: kaniko
               image: gcr.io/kaniko-project/executor:debug
               workingDir: /home/jenkins/agent
@@ -303,7 +303,7 @@ Jenkins NodE(Agent)에서 aws와 argocd명령을 사용하기 위해서 별도�
               envVars:
               - envVar:
                   key: AWS_REGION
-                  value: ap-northeast-2
+                  value: ${AWS_REGION}
     EOF
     ```
 
@@ -473,7 +473,7 @@ Jenkins NodE(Agent)에서 aws와 argocd명령을 사용하기 위해서 별도�
     ```
     Jenkins Username: admin
     Jenkins Password: admin
-    Jenkins URL: http://k8s-jenkins-jenkins-95eb779f15-35c1db08cd82d091.elb.ap-northeast-2.amazonaws.com
+    Jenkins URL: http://k8s-jenkins-jenkins-95eb779f15-35c1db08cd82d091.elb.us-west-2.amazonaws.com
     ```
 
 ### Jenkins Credential
@@ -611,12 +611,12 @@ Argocd 및 Git레포지토리에 접근하기 위한 Credentials을 추가합니
                         sh """
                             set +x
                             # ECR 인증 정보를 Kaniko용 config.json으로 생성
-                            AUTH=\$(aws ecr get-login-password --region ap-northeast-2 | base64 -w 0)
+                            AUTH=\$(aws ecr get-login-password --region us-west-2 | base64 -w 0)
                             cat > /kaniko/.docker/config.json <<EOF
     {
       "auths": {
         "${ECR_REGISTRY}": {
-          "auth": "\$(echo -n "AWS:\$(aws ecr get-login-password --region ap-northeast-2)" | base64 -w 0)"
+          "auth": "\$(echo -n "AWS:\$(aws ecr get-login-password --region us-west-2)" | base64 -w 0)"
         }
       }
     }
@@ -788,14 +788,14 @@ Argocd 및 Git레포지토리에 접근하기 위한 Credentials을 추가합니
     결과 예시:
     ```groovy
             // ECR
-            ECR_REGISTRY = "940482424078.dkr.ecr.ap-northeast-2.amazonaws.com"
+            ECR_REGISTRY = "940482424078.dkr.ecr.us-west-2.amazonaws.com"
             IMAGE_NAME = "eks-blueprint-workshop-demo-application"
             APPLICATION_REPO = "https://drys2vc4z95uy.cloudfront.net/gitea/workshop-user/eks-blueprints-workshop-gitops-demo-application"
             // GitOps
             GITOPS_REPO = "https://drys2vc4z95uy.cloudfront.net/gitea/workshop-user/eks-blueprints-workshop-gitops-apps.git"
             GITOPS_DIR = "deploy-workshop/canary/staging"
             // ArgoCD
-            ARGOCD_SERVER = "k8s-argocd-argocdse-b337ad2062-82706d3036fd5160.elb.ap-northeast-2.amazonaws.com"
+            ARGOCD_SERVER = "k8s-argocd-argocdse-b337ad2062-82706d3036fd5160.elb.us-west-2.amazonaws.com"
             ARGOCD_APP_NAME = "deployment-staging-canary-deploy-workshop"
             ARGOCD_APP_ROLLOUT_NAME = "rollout-canary"
     ```
@@ -810,14 +810,14 @@ Argocd 및 Git레포지토리에 접근하기 위한 Credentials을 추가합니
 
         environment {
             // ECR
-            ECR_REGISTRY = "940482424078.dkr.ecr.ap-northeast-2.amazonaws.com"
+            ECR_REGISTRY = "940482424078.dkr.ecr.us-west-2.amazonaws.com"
             IMAGE_NAME = "eks-blueprint-workshop-demo-application"
             APPLICATION_REPO = "https://drys2vc4z95uy.cloudfront.net/gitea/workshop-user/eks-blueprints-workshop-gitops-demo-application"
             // GitOps
             GITOPS_REPO = "https://drys2vc4z95uy.cloudfront.net/gitea/workshop-user/eks-blueprints-workshop-gitops-apps.git"
             GITOPS_DIR = "deploy-workshop/canary/staging"
             // ArgoCD
-            ARGOCD_SERVER = "k8s-argocd-argocdse-b337ad2062-82706d3036fd5160.elb.ap-northeast-2.amazonaws.com"
+            ARGOCD_SERVER = "k8s-argocd-argocdse-b337ad2062-82706d3036fd5160.elb.us-west-2.amazonaws.com"
             ARGOCD_APP_NAME = "deployment-staging-canary-deploy-workshop"
             ARGOCD_APP_ROLLOUT_NAME = "rollout-canary"
         }
