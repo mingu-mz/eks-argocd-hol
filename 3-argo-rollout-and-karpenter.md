@@ -601,21 +601,21 @@ nodeSelector:
     ```
 3. bluegreen, canary 승인
 
-> **주의**
-> 
-> 승인 가능상태가 되려면 몇 분 기다려야합니다.
+    > **주의**
+    > 
+    > 승인 가능상태가 되려면 몇 분 기다려야합니다.
 
-```sh
-argocd app actions run deployment-staging-bluegreen-deploy-workshop resume \
-  --kind Rollout \
-  --resource-name rollout-bluegreen
-```
+    ```sh
+    argocd app actions run deployment-staging-bluegreen-deploy-workshop resume \
+      --kind Rollout \
+      --resource-name rollout-bluegreen
+    ```
 
-```sh
-argocd app actions run deployment-staging-canary-deploy-workshop resume \
-  --kind Rollout \
-  --resource-name rollout-canary
-```
+    ```sh
+    argocd app actions run deployment-staging-canary-deploy-workshop resume \
+      --kind Rollout \
+      --resource-name rollout-canary
+    ```
 
 4. 검증
 
