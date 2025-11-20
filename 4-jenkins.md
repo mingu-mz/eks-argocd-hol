@@ -549,7 +549,7 @@ Argocd 및 Git레포지토리에 접근하기 위한 Credentials을 추가합니
     System의 (global)을 확장하여 `Add Credentials`를 선택합니다.
     ![](images/2025-10-31-15-18-17.png)
 
-    3. Credential 생성
+3. Credential 생성
 
     1번에서 조회한 결과를 토대로 데이터를 입력합니다.
     ![](images/2025-10-31-15-20-45.png)
