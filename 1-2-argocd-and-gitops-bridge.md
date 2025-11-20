@@ -297,8 +297,8 @@ ApplicationSet은 ArgoCD 애플리케이션의 팩토리라고 생각하면 됩�
 
     manifest를 적용하세요
     ```sh
-    kubectl create ns guestbook
-    kubectl apply -f ~/environment/basics/guestbookApplicationSet.yaml
+    kubectl create ns guestbook --context hub-cluster
+    kubectl apply -f ~/environment/basics/guestbookApplicationSet.yaml --context hub-cluster
     ```
 
 5. 신청서 확인
