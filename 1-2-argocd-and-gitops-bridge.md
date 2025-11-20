@@ -144,8 +144,8 @@ Argo CD는 Application 객체를 사용하여 유사한 접근 방식을 따릅�
     - ArgoCD는 리소스(배포, 서비스, Pod)를 허브 클러스터에 동기화하고 배포합니다.
 
     ```sh
-    kubectl create ns guestbook
-    kubectl apply -f ~/environment/basics/guestbook.yaml
+    kubectl create ns guestbook --context hub-cluster
+    kubectl apply -f ~/environment/basics/guestbook.yaml --context hub-cluster
     ```
 
 7. 응용 프로그램 확인
