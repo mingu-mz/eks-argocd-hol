@@ -307,7 +307,23 @@ ArgoCD 애플리케이션이 spoke-staging클러스터에 배포되면 ArgoCD는
     EOF
     ```
 
-7. 변경 사항 적용
+7. Renote state 설정
+   
+    ```sh
+    cat <<'EOF' >> ~/environment/spoke/remote_state.tf
+    data "terraform_remote_state" "hub" {
+      backend = "s3"
+
+      config = {
+        bucket = "${data.aws_ssm_parameter.tfstate_bucket.value}"
+        key    = "hub/terraform.tfstate"
+        region = data.aws_region.current.name
+      }
+    }
+    EOF
+    ```
+
+8. 변경 사항 적용
 
     ```sh
     cd ~/environment/spoke
@@ -316,7 +332,7 @@ ArgoCD 애플리케이션이 spoke-staging클러스터에 배포되면 ArgoCD는
     terraform apply --auto-approve
     ```
 
-8. 허브 클러스터 구성 확인
+9.  허브 클러스터 구성 확인
 
     변경 사항을 적용한 후, 허브 클러스터에서 실행되는 ArgoCD UI의 설정 → 클러스터 섹션에 스포크 스테이징 클러스터가 나타나야 합니다.
 
